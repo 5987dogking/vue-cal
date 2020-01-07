@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue-cal</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-cal"></script>
+    <script src="https://unpkg.com/vue-cal/dist/i18n/zh-hk.js"></script>
+    <link href="https://unpkg.com/vue-cal/dist/vuecal.css" rel="stylesheet">
+    <style>
+        .vuecal__cell {
+            min-height: 50px;
+        }
+
+        .vuecal__cell-events>div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container">
+
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">how_to_reg</i>步驟一：是否指定設計
+                    &nbsp; {{userData.designer}}
+                </div>
+                <div class="collapsible-body">
+                    <select v-model='userData.designer' @change="collapsible.open(1)">
+                        <option value="不指定" selected>不指定</option>
+                        <option :value="designer" v-for="designer in designers">{{designer}}</option>
+                    </select>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">event_note</i>步驟二：選擇日期</div>
+                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">access_time</i>步驟三：選擇時間</div>
+                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">menu_book</i>步驟四：服務項目</div>
+                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+            </li>
+        </ul>
+
+        {{ message }}
+        <vue-cal :events="events" locale="zh-hk" default-view="month" :time-from="09 * 60" :time-to="22 * 60"
+            :time-step="60" @cell-dblclick="mk" :events-on-month-view="'short'">
+            <template v-slot:cell-content="{ cell, view, goNarrower, events }">
+                <div class="vuecal__cell-date" :class="view.id" @click="goNarrower">
+                    <span class="clickable">{{ cell.content }}</span>
+                </div>
+                <span class="vuecal__cell-events-count"
+                    v-if="view.id === 'month' &amp;&amp; events.length">{{ events.length }}</span>
+                <span class="vuecal__no-event"
+                    v-if="['week', 'day'].includes(view.id) &amp;&amp; !events.length">無預約👌</span>
+            </template>
+
+        </vue-cal>
+    </div>
+</body>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var elem = document.querySelector('.collapsible');
+        window.app.collapsible = M.Collapsible.getInstance(elem);
+    });
+
+    var app = new Vue({
+        components: { vueCal: vuecal },
+        el: '#app',
+        methods: {
+            mk(e) {
+                console.log('mk e', e);
+            },
+        },
+        mounted: function () {
+            M.AutoInit();
+        },
+        data: {
+            message: 'Hello Vue!',
+            userData: {
+                designer: '不指定',
+            },
+            collapsible: {},
+            designers: ['Mark', 'Kevin', 'Kenny'],
+            events: [
+                {
+                    start: '2020-01-13 18:00',
+                    end: '2020-01-13 19:00',
+                    title: 'Mark剪頭髮',
+                },
+                {
+                    start: '2020-01-13 11:00',
+                    end: '2020-01-13 12:00',
+                    title: '剪頭髮'
+                },
+                {
+                    start: '2020-01-13 09:00',
+                    end: '2020-01-13 12:00',
+                    title: '燙頭髮',
+                    content: '<i class="v-icon material-icons">favorite_outline</i>',
+                },
+            ],
+        }
+    })
+</script>
+
+</html>
