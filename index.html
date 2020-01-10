@@ -5,17 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>vue-cal</title>
+    <title>Mark純理髮</title>
+    <meta name="description" content="約起來">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/vue-cal"></script>
     <script src="https://unpkg.com/vue-cal/dist/i18n/zh-hk.js"></script>
     <link href="https://unpkg.com/vue-cal/dist/vuecal.css" rel="stylesheet">
     <style>
+        .mtop {
+            margin-top: 15px;
+        }
+
         .vuecal__cell {
             min-height: 50px;
         }
@@ -25,39 +29,114 @@
             flex-direction: column;
             justify-content: center;
         }
+
+        .collapsible-header {
+            position: relative;
+        }
+
+        .collapsible-header>span {
+            position: absolute;
+            right: 30px;
+        }
+
+        .brand-logo {
+            white-space: nowrap;
+        }
     </style>
 </head>
 
 <body>
-    <div id="app" class="container">
+    <nav>
+        <div class="nav-wrapper indigo">
+            <a href="#" class="brand-logo"><i class="material-icons">wc</i>Mark純理髮</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="#">Hi</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="app" class="container mtop">
 
         <ul class="collapsible">
-            <li>
-                <div class="collapsible-header"><i class="material-icons">how_to_reg</i>步驟一：是否指定設計
-                    &nbsp; {{userData.designer}}
+            <li class="active">
+                <div class="collapsible-header">
+                    <i class="material-icons">how_to_reg</i>步驟一：是否指定設計
+                    <span>{{userData.designer}}</span>
                 </div>
                 <div class="collapsible-body">
-                    <select v-model='userData.designer' @change="collapsible.open(1)">
+                    <select v-model='userData.designer'>
                         <option value="不指定" selected>不指定</option>
                         <option :value="designer" v-for="designer in designers">{{designer}}</option>
                     </select>
                 </div>
             </li>
             <li>
-                <div class="collapsible-header"><i class="material-icons">event_note</i>步驟二：選擇日期</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                <div class="collapsible-header"><i class="material-icons">event_note</i>步驟二：選擇日期
+                    <span>{{userData.reservationDate}}</span>
+                </div>
+                <div class="collapsible-body">
+                    <label for="reservationDate-input">點擊下方選擇日期</label>
+                    <input type="date" id="reservationDate-input" v-model='userData.reservationDate'>
+                </div>
             </li>
             <li>
-                <div class="collapsible-header"><i class="material-icons">access_time</i>步驟三：選擇時間</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                <div class="collapsible-header"><i class="material-icons">access_time</i>步驟三：選擇時間
+                    <span>{{userData.reservationTime}}</span>
+                </div>
+                <div class="collapsible-body">
+                    <label for="reservationTime-input">點擊下方選擇時間</label>
+                    <select class="browser-default" v-model='userData.reservationTime'>
+                        <option :value="time.time" v-for="time in timeArr" :disabled="time.disabled">{{time.time}}
+                        </option>
+                    </select>
+                </div>
             </li>
             <li>
-                <div class="collapsible-header"><i class="material-icons">menu_book</i>步驟四：服務項目</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                <div class="collapsible-header"><i class="material-icons">menu_book</i>步驟四：服務項目
+                    <span>{{userData.reservationServices}}</span>
+                </div>
+                <div class="collapsible-body">
+                    <form action="#">
+                        <p>
+                            <label>
+                                <input name="group1" class="with-gap" v-model="userData.reservationServices"
+                                    type="radio" value="剪頭髮 1h $200" />
+                                <span class="black-text">剪頭髮 1h $200</span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input name="group1" class="with-gap" v-model="userData.reservationServices"
+                                    type="radio" value="純理髮 3h $3000" />
+                                <span class="black-text">純理髮 3h $3000</span>
+                            </label>
+                        </p>
+                    </form>
+                </div>
             </li>
         </ul>
 
-        {{ message }}
+        <div class="input-field col s12 mtop">
+            <i class="material-icons prefix">person</i>
+            <input type="text" id="name-input" class="autocomplete" v-model="userData.name">
+            <label for="name-input">姓名</label>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="material-icons prefix">phone</i>
+            <input type="text" id="phone-input" class="autocomplete" v-model="userData.phone">
+            <label for="phone-input">電話</label>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="material-icons prefix">mail</i>
+            <input type="text" id="email-input" class="autocomplete" v-model="userData.email">
+            <label for="email-input">信箱</label>
+        </div>
+
+        <a class="btn indigo waves-effect waves-light" style="width: 100%;" @click="reservationSend()">確定預約</a>
+
+        <!-- {{ message }}
         <vue-cal :events="events" locale="zh-hk" default-view="month" :time-from="09 * 60" :time-to="22 * 60"
             :time-step="60" @cell-dblclick="mk" :events-on-month-view="'short'">
             <template v-slot:cell-content="{ cell, view, goNarrower, events }">
@@ -70,7 +149,7 @@
                     v-if="['week', 'day'].includes(view.id) &amp;&amp; !events.length">無預約👌</span>
             </template>
 
-        </vue-cal>
+        </vue-cal> -->
     </div>
 </body>
 
@@ -88,17 +167,52 @@
             mk(e) {
                 console.log('mk e', e);
             },
+            reservationSend() {
+                const errMsg = [];
+                if (this.userData.reservationDate === '') { errMsg.push('日期未選擇'); }
+                if (this.userData.reservationTime === '') { errMsg.push('時間未選擇'); }
+                if (this.userData.reservationServices === '') { errMsg.push('服務未選擇'); }
+                if (this.userData.name === '') { errMsg.push('姓名未填寫'); }
+                if (this.userData.phone === '') { errMsg.push('電話未填寫'); }
+                if (errMsg.length === 0) {
+                    alert('資料送出');
+                } else {
+                    alert(errMsg.join('\n'));
+                }
+            },
         },
         mounted: function () {
             M.AutoInit();
         },
+        watch: {
+            'userData.reservationServices': function (val) {
+                // this.collapsible.close(3);
+            }
+        },
         data: {
+            formValidation: false,
             message: 'Hello Vue!',
             userData: {
                 designer: '不指定',
+                reservationDate: '',
+                reservationTime: '',
+                reservationServices: '',
+                name: '',
+                phone: '',
+                email: '',
             },
             collapsible: {},
             designers: ['Mark', 'Kevin', 'Kenny'],
+            timeArr: [
+                { time: '09:00', disabled: true },
+                { time: '09:30', disabled: false },
+                { time: '10:00', disabled: false },
+                { time: '10:30', disabled: false },
+                { time: '11:00', disabled: false },
+                { time: '11:30', disabled: true },
+                { time: '12:00', disabled: false },
+                { time: '12:30', disabled: false },
+            ],
             events: [
                 {
                     start: '2020-01-13 18:00',
